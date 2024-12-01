@@ -4,7 +4,8 @@
 #include <time.h>
 
 // Assembly kernel function here
-// extern void asm_distance(int n, double *x1, double *x2, double *y1, double *y2, double *z)
+// extern void calculate_distances_asm(int n, double *x1, double *x2, double *y1, double *y2, double *z);
+extern double asm_distance(double x1, double x2, double y1, double y2);
 
 // C kernel function
 void c_distance(int n, double *x1, double *x2, double *y1, double *y2, double *z) {
@@ -18,7 +19,7 @@ void c_distance(int n, double *x1, double *x2, double *y1, double *y2, double *z
 
 // main timing
 int main() {
-    const int vector_sizes[] = {1 << 20, 1 << 24, 1 << 27}; // crashes at 28 idk
+    const int vector_sizes[] = {1 << 20, 1 << 24, 1 << 25}; // crashes at 28 idk
 	int i, j, k;
     srand(time(NULL));
     double test_value1 = (double)(rand() % 100) / 10.0;
@@ -73,8 +74,9 @@ int main() {
         double asm_time = 0.0;
         for (i = 0; i < runs; i++) {
             s = clock();
+            // calculate_distances_asm(n, x1, x2, y1, y2, z_asm);
             for (j = 0; j < n; j++) {
-                z_asm[j] = 0; // call to asm here
+                z_asm[j] = asm_distance(x1[j], x2[j], y1[j], y2[j]);
             }
             e = clock();
             asm_time += (double)(e - s) / CLOCKS_PER_SEC;
@@ -88,6 +90,16 @@ int main() {
         }
         printf("> ASSEMBLY KERNEL AVERAGE TIME: %f seconds\n", asm_time);
 
+        printf("\nSANITY CHECK\n");
+        for (i = 0; i < 10; i++) {
+            if (z_asm[i] == z_c[i]) {
+              printf("Z[%d] : THE x86-64 KERNEL OUTPUT IS CORRECT\n", i);
+            }
+            else {
+              printf("Z[%d] : FAILED\n", i);
+            }
+        }
+
         // free the allocated mem
         free(x1);
         free(x2);
@@ -99,3 +111,11 @@ int main() {
 
     return 0;
 }
+
+
+/*
+nasm -f win64 test_asm.asm
+gcc -c main.c -o cfile.obj -m64
+gcc cfile.obj test_asm.obj -o cfile.exe -m64
+cfile.exe
+*/
