@@ -64,7 +64,7 @@ int main() {
                    i, x1[i], i, x2[i], i, y1[i], i, y2[i]);
         }
 
-        printf("C KERNEL RESULT (FIRST 10 ELEMENTS):\n");
+        printf("\nC KERNEL RESULT (FIRST 10 ELEMENTS):\n");
         for (i = 0; i < 10; i++) {
             printf("Z[%d] = %f\n", i, z_c[i]);
         }
