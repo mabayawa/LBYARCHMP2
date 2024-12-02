@@ -4,40 +4,42 @@
 #include <time.h>
 
 // Assembly kernel function here
-// extern void calculate_distances_asm(int n, double *x1, double *x2, double *y1, double *y2, double *z);
-extern double asm_distance(double x1, double x2, double y1, double y2);
+extern void calculate_distances_asm(int n, float *x1, float *x2, float *y1, float *y2, float *z);
 
 // C kernel function
-void c_distance(int n, double *x1, double *x2, double *y1, double *y2, double *z) {
+void c_distance(int n, float *x1, float *x2, float *y1, float *y2, float *z) {
     int i;
     for (i = 0; i < n; i++) {
-        z[i] = sqrt(pow(x2[i] - x1[i], 2) + pow(y2[i] - y1[i], 2));
+        z[i] = sqrtf((x2[i] - x1[i]) * (x2[i] - x1[i]) + (y2[i] - y1[i]) * (y2[i] - y1[i]));
     }
 }
 
-
+float check_distance(float x1, float y1, float x2, float y2){
+  return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
+ }
 
 // main timing
 int main() {
-    const int vector_sizes[] = {1 << 20, 1 << 24, 1 << 25}; // crashes at 28 idk
+    const int vector_sizes[] = {1 << 20, 1 << 24, 1 << 27}; // crashes at 28 idk
 	int i, j, k;
     srand(time(NULL));
-    double test_value1 = (double)(rand() % 100) / 10.0;
-    double test_value2 = (double)(rand() % 100) / 10.0;
-    double test_value3 = (double)(rand() % 100) / 10.0;
-    double test_value4 = (double)(rand() % 100) / 10.0;
-	
+    float test_value1 = (float)(rand() % 100) / 20.0;
+    float test_value2 = (float)(rand() % 100) / 20.0;
+    float test_value3 = (float)(rand() % 100) / 20.0;
+    float test_value4 = (float)(rand() % 100) / 20.0;
+    float c_sanity_key = check_distance(test_value1, test_value2, test_value3, test_value4);
+
     for (k = 0; k < 3; k++) {
         int runs = 30;
         int n = vector_sizes[k];
 
-        double *x1 = (double *)malloc(n * sizeof(double));
-        double *x2 = (double *)malloc(n * sizeof(double));
-        double *y1 = (double *)malloc(n * sizeof(double));
-        double *y2 = (double *)malloc(n * sizeof(double));
-        double *z_c = (double *)malloc(n * sizeof(double));
-        double *z_asm = (double *)malloc(n * sizeof(double));
-        
+        float *x1 = (float *)malloc(n * sizeof(float));
+        float *x2 = (float *)malloc(n * sizeof(float));
+        float *y1 = (float *)malloc(n * sizeof(float));
+        float *y2 = (float *)malloc(n * sizeof(float));
+        float *z_c = (float *)malloc(n * sizeof(float));
+        float *z_asm = (float *)malloc(n * sizeof(float));
+
         for (i = 0; i < n; i++) {
             x1[i] = test_value1;
             x2[i] = test_value2;
@@ -47,12 +49,12 @@ int main() {
 
         // C kernel
         clock_t s, e;
-        double c_time = 0.0;
+        float c_time = 0.0;
         for (i = 0; i < runs; i++) {
             s = clock();
             c_distance(n, x1, x2, y1, y2, z_c);
             e = clock();
-            c_time += (double)(e - s) / CLOCKS_PER_SEC;
+            c_time += (float)(e - s) / CLOCKS_PER_SEC;
         }
         c_time /= runs;
 
@@ -71,15 +73,12 @@ int main() {
         printf("> C KERNEL AVERAGE TIME: %f seconds\n", c_time);
 
         // assembly kernel
-        double asm_time = 0.0;
+        float asm_time = 0.0;
         for (i = 0; i < runs; i++) {
             s = clock();
-            // calculate_distances_asm(n, x1, x2, y1, y2, z_asm);
-            for (j = 0; j < n; j++) {
-                z_asm[j] = asm_distance(x1[j], x2[j], y1[j], y2[j]);
-            }
+            calculate_distances_asm(n, x1, x2, y1, y2, z_asm);
             e = clock();
-            asm_time += (double)(e - s) / CLOCKS_PER_SEC;
+            asm_time += (float)(e - s) / CLOCKS_PER_SEC;
         }
         asm_time /= runs;
 
@@ -90,7 +89,7 @@ int main() {
         }
         printf("> ASSEMBLY KERNEL AVERAGE TIME: %f seconds\n", asm_time);
 
-        printf("\nSANITY CHECK\n");
+        printf("\nSANITY CHECK x86-64\n");
         for (i = 0; i < 10; i++) {
             if (z_asm[i] == z_c[i]) {
               printf("Z[%d] : THE x86-64 KERNEL OUTPUT IS CORRECT\n", i);
@@ -111,11 +110,3 @@ int main() {
 
     return 0;
 }
-
-
-/*
-nasm -f win64 test_asm.asm
-gcc -c main.c -o cfile.obj -m64
-gcc cfile.obj test_asm.obj -o cfile.exe -m64
-cfile.exe
-*/
