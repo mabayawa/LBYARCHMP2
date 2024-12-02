@@ -20,7 +20,7 @@ float check_distance(float x1, float y1, float x2, float y2){
 
 // main timing
 int main() {
-    const int vector_sizes[] = {1 << 20, 1 << 24, 1 << 27}; // crashes at 28 idk
+    const int vector_sizes[] = {1 << 20, 1 << 24, 1 << 28}; // might crash at 29 or 30
 	int i, j, k;
     srand(time(NULL));
     float test_value1 = (float)(rand() % 100) / 20.0;
