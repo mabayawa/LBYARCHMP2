@@ -34,5 +34,10 @@ cfile.exe
 # I. COMPARATIVE EXECUTION TIME AND ANALYSIS
 
 # II. PROGRAM OUTPUT WITH CORRECTNESS CHECKS
+![image](https://github.com/user-attachments/assets/aa4cb38b-bb3b-49e6-92d3-18fecb8d3d1c)
+![image](https://github.com/user-attachments/assets/9e2f8caa-9a47-41f7-b596-7fe9df774bc8)
+![image](https://github.com/user-attachments/assets/2e849d6c-29e2-4419-808a-604a543adc26)
+![image](https://github.com/user-attachments/assets/a5280692-fe1a-4fae-94b8-e51405ed8ec6)
+![image](https://github.com/user-attachments/assets/c6ff8586-dd3a-4edb-a62b-756c6c687375)
 
 # III. SHORT VIDEOS
