@@ -70,16 +70,16 @@ int main() {
         for (i = 0; i < 10; i++) {
             printf("Z[%d] = %f\n", i, z_c[i]);
         }
-//        printf("> C KERNEL AVERAGE TIME: %f seconds\n", c_time);
-//        printf("\nSANITY CHECK C\n");
-//        for (i = 0; i < 10; i++) {
-//            if (z_c[i] == c_sanity_key) {
-//                printf("Z[%d] : THE C KERNEL OUTPUT IS CORRECT\n", i);
-//            }
-//            else {
-//                printf("Z[%d] : FAILED\n", i);
-//            }
-//        }
+        printf("> C KERNEL AVERAGE TIME: %f seconds\n", c_time);
+    //    printf("\nSANITY CHECK C\n");
+    //    for (i = 0; i < 10; i++) {
+    //        if (z_c[i] == c_sanity_key) {
+    //            printf("Z[%d] : THE C KERNEL OUTPUT IS CORRECT\n", i);
+    //        }
+    //        else {
+    //            printf("Z[%d] : FAILED\n", i);
+    //        }
+    //    }
 
         // assembly kernel
         float asm_time = 0.0;
