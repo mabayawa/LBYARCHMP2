@@ -14,8 +14,8 @@ void c_distance(int n, float *x1, float *x2, float *y1, float *y2, float *z) {
     }
 }
 
-float check_distance(float x1, float y1, float x2, float y2){
-  return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
+float check_distance(float x1, float x2, float y1, float y2){
+  return sqrtf((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
  }
 
 // main timing
@@ -27,7 +27,7 @@ int main() {
     float test_value2 = (float)(rand() % 100) / 20.0;
     float test_value3 = (float)(rand() % 100) / 20.0;
     float test_value4 = (float)(rand() % 100) / 20.0;
-    float c_sanity_key = check_distance(test_value1, test_value2, test_value3, test_value4);
+    // float c_sanity_key = check_distance(test_value1, test_value2, test_value3, test_value4);
 
     for (k = 0; k < 3; k++) {
         int runs = 30;
@@ -70,7 +70,16 @@ int main() {
         for (i = 0; i < 10; i++) {
             printf("Z[%d] = %f\n", i, z_c[i]);
         }
-        printf("> C KERNEL AVERAGE TIME: %f seconds\n", c_time);
+//        printf("> C KERNEL AVERAGE TIME: %f seconds\n", c_time);
+//        printf("\nSANITY CHECK C\n");
+//        for (i = 0; i < 10; i++) {
+//            if (z_c[i] == c_sanity_key) {
+//                printf("Z[%d] : THE C KERNEL OUTPUT IS CORRECT\n", i);
+//            }
+//            else {
+//                printf("Z[%d] : FAILED\n", i);
+//            }
+//        }
 
         // assembly kernel
         float asm_time = 0.0;
